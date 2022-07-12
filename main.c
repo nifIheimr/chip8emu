@@ -4,6 +4,19 @@
 #include <stdbool.h>
 #include "chip8.h"
 
+/*DOCUMENTATION:
+    REGISTERS: We have 16 8bit registers, identified from V0 to VF. The last register (VF) will be reserved for operation result flags
+    MEMORY: 4096 Bytes (4K) ranging from 0x000 to 0xFFF segmented in three sections:
+        - From 0x000 to 0x1FF: Interpreter
+        - From 0x050 to 0x0A0: Storage for 16 built in characters
+        - From 0x200 to 0xFFF: From here we'll store every instruction, every free byte after that will be free for our use
+    INDEX REGISTER: 16Bit register used to store memory addresses while in use in operations.
+
+
+    SCREEN: Our screen array will hold either 1 or 0 to draw our graphics on the screen, we don't need anything else due to the graphics being 1bit. The graphics are 
+    drawn using sprites and XORing with the corresponding pixels on the screen
+*/
+
 int main(int argc, char *argv[]) {
     
     if(argc != 1) {
