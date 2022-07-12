@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+#include <errno.h>
 #include "chip8.h"
 
 /*DOCUMENTATION:
@@ -19,7 +21,7 @@
 
 int main(int argc, char *argv[]) {
     
-    if(argc != 1) {
+    if(argc != 2) {
         perror("WRONG NUMBER OF ARGUMENTS");
         exit(errno);
     }
@@ -41,34 +43,39 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-initializeChip8(Chip8 *chip8) {
+int initializeChip8(Chip8 *chip8) {
     chip8->PC = INST_ADDRESS; //Initialize PC to write instructions to 0x200
+
+    printf("INITIALIZED PC TO 0x%03X\n", INST_ADDRESS);
 
     for (int i = 0; i < FONTSET_SIZE; i++) {
         chip8->memory[FONTSET_ADDRESS + i] = fontset[i]; //Load fontset in memory
     }
-    
+
+    printf("LOADED FONTSET TO 0x%03X\n", FONTSET_ADDRESS);
+
+    return 0;
 }
 
 
 int loadROM(Chip8 *c, char const *ROM) {\
-    FILE *ROM; 
+    FILE *romFile; 
 
-    if((ROM = fopen(ROM, "rb")) == NULL) { //Reading file in binary format
-        return;
+    if((romFile = fopen(ROM, "rb")) == NULL) { //Reading file in binary format
+        return -1;
     }
 
-    long size = ftell(ROM); //Gets total filesize for the ROM
+    long size = ftell(romFile); //Gets total filesize for the ROM
     char *buffer = malloc(sizeof(char) * size);
     char readChar;
 
-    fseek(ROM, size, SEEK_SET); //Sets file pointer at the beggining of the file
+    fseek(romFile, size, SEEK_SET); //Sets file pointer at the beggining of the file
 
-    while((readChar = getc(ROM)) != EOF) {
-        strcat(buffer, readChar);
+    while((readChar = getc(romFile)) != EOF) {
+        strcat(buffer, &readChar);
     }
 
-    fclose(ROM);
+    fclose(romFile);
 
     //Load into memory
     for (long i = 0; i < size; i++) {
@@ -76,12 +83,17 @@ int loadROM(Chip8 *c, char const *ROM) {\
     }
     
     free(buffer);
+
+    return 0;
 }
 
 
 
 void update(Chip8 *c) {
-    //
 
 }
 
+
+bool keyboardInput(Chip8 *c) {
+    return true;
+}

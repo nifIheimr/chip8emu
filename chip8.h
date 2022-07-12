@@ -50,6 +50,7 @@ typedef struct {
 
 int initializeChip8(Chip8 *);
 int loadROM(Chip8 *, char const *);
+bool keyboardInput(Chip8 *);
 void update(Chip8 *);
 
 #endif
